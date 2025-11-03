@@ -1,6 +1,6 @@
 # Zanki — Finance Management App
 
-Welcome to **Team Fight Club’s DevSoc 25T3 project: Zanki**, a next-generation finance management app designed to help users track, analyze, and optimize their spending and investments.
+Welcome to **Team Fight Club’s DevSoc 25T3 project: Zanki**, a next-generation finance management app designed to help users track, analyse, and optimize their spending and investments.
 
 ## 👥 Team Members
 - Piyush (Team Lead)
