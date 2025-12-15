@@ -1,5 +1,5 @@
-import React from 'react';
 "use client";
+import React from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -34,7 +34,7 @@ export default function DataEntryPage() {
         return;
       }
       setMsg("Saved!");
-      router.push("/dashboard"); 
+      router.push("/dashboard");
     } catch {
       setMsg("Network error.");
     }
