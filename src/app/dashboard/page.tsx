@@ -1,6 +1,27 @@
+"use client";
+
 import Link from "next/link";
+import { Tooltip, Sankey } from "recharts";
 
 export default function DashboardPage() {
+  const sankeyData = {
+    nodes: [
+      { name: "Salary" },
+      { name: "Freelance" },
+      { name: "Rent" },
+      { name: "Food" },
+      { name: "Entertainment" },
+      { name: "Savings" },
+    ],
+    links: [
+      { source: 0, target: 2, value: 1200 },
+      { source: 0, target: 3, value: 400 },
+      { source: 0, target: 5, value: 300 },
+      { source: 1, target: 3, value: 200 },
+      { source: 1, target: 4, value: 150 },
+    ],
+  };
+
   return (
     <>
       <div className="flex h-screen bg-black-700 text-white">
@@ -53,7 +74,9 @@ export default function DashboardPage() {
 
             <div className="rounded-lg bg-white/5 p-6">
               <p className="text-sm text-white/60">Total Spending</p>
-              <p className="mt-2 text-2xl font-semibold text-red-400">$9,999</p>
+              <p className="mt-2 text-2xl font-semibold text-red-400">
+                -$9,999
+              </p>
             </div>
 
             <div className="rounded-lg bg-white/5 p-6">
@@ -66,10 +89,28 @@ export default function DashboardPage() {
           </div>
 
           <div className="grid gap-6">
-            <div className="rounded-lg bg-white/5 p-6">Sankey diagram here</div>
-
             <div className="rounded-lg bg-white/5 p-6">
-              Other diagrams (line graphs, pie charts etc.)
+              <div className="grid gap-6">
+                <div className="rounded-lg bg-white/3 p-6 overflow-x-auto">
+                  <h2 className="text-lg font-semibold mb-4">Sankey Chart</h2>
+                  <Sankey
+                    width={600}
+                    height={400}
+                    data={sankeyData}
+                    nodePadding={50}
+                    nodeWidth={15}
+                    margin={{ top: 20, bottom: 20, left: 20, right: 20 }}
+                    link={{ stroke: "#4ade80", strokeOpacity: 0.75 }}
+                    node={{}}
+                  >
+                    <Tooltip />
+                  </Sankey>
+                </div>
+
+                <div className="rounded-lg bg-white/5 p-6">
+                  Other diagrams (line graphs, pie charts etc.)
+                </div>
+              </div>
             </div>
           </div>
         </main>
