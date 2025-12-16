@@ -91,13 +91,13 @@ export default function HeroSection() {
                     <div className="relative mx-auto max-w-5xl px-6 pt-28 lg:pt-24">
                         <div className="relative z-10 mx-auto max-w-2xl text-center">
                             <h1 className="text-balance text-4xl font-semibold md:text-5xl lg:text-6xl">Expense Tracking made seamless</h1>
-                            <p className="text-muted-foreground mx-auto my-8 max-w-2xl text-xl">Chart your spending patterns. Get AI-powered insights on where to save. See your progress compared to last month. <br /><strong>Your money, finally working for you.</strong></p>
+                            <p className="text-muted-foreground mx-auto my-8 max-w-2xl text-xl"><strong>Your money, <i>finally</i> working for you.</strong></p>
 
                             <Button
                                 asChild
                                 size="lg">
                                 <Link href="#">
-                                    <span className="btn-label">Start Building</span>
+                                    <span className="btn-label">Start tracking</span>
                                 </Link>
                             </Button>
                         </div>
