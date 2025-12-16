@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { Tooltip, Sankey } from "recharts";
+import SankeyNode from "@/app/components/sankey-node";
 
 export default function DashboardPage() {
+  // temp hard coded data
   const sankeyData = {
     nodes: [
       { name: "Salary" },
@@ -25,9 +27,7 @@ export default function DashboardPage() {
   return (
     <>
       <div className="flex h-screen bg-black-700 text-white">
-        {/* Sidebar */}
         <aside className="flex w-64 flex-col border-r border-white/10 bg-[#161616]">
-          {/* Logo */}
           <div className="flex h-16 items-center px-6 border-b border-white/10">
             <Link
               href="/"
@@ -37,7 +37,6 @@ export default function DashboardPage() {
             </Link>
           </div>
 
-          {/* Navigation */}
           <nav className="flex flex-1 flex-col gap-2 px-4 py-6">
             <Link
               href="/entry"
@@ -54,13 +53,11 @@ export default function DashboardPage() {
             </Link>
           </nav>
 
-          {/* Profile */}
           <div className="border-t border-white/10 px-6 py-4">
             <div className="text-sm font-medium">Profile</div>
           </div>
         </aside>
 
-        {/* Main content */}
         <main className="flex-1 overflow-y-auto p-8">
           <h1 className="text-xl font-semibold mb-6">Welcome back, user</h1>
 
@@ -91,17 +88,17 @@ export default function DashboardPage() {
           <div className="grid gap-6">
             <div className="rounded-lg bg-white/5 p-6">
               <div className="grid gap-6">
-                <div className="rounded-lg bg-white/3 p-6 overflow-x-auto">
+                <div className="rounded-lg bg-white/5 p-6 min-w-xl">
                   <h2 className="text-lg font-semibold mb-4">Sankey Chart</h2>
                   <Sankey
-                    width={600}
+                    width={700}
                     height={400}
                     data={sankeyData}
                     nodePadding={50}
                     nodeWidth={15}
-                    margin={{ top: 20, bottom: 20, left: 20, right: 20 }}
-                    link={{ stroke: "#4ade80", strokeOpacity: 0.75 }}
-                    node={{}}
+                    margin={{ top: 20, bottom: 20, left: 20, right: 120 }}
+                    link={{ stroke: "#4ade80", strokeOpacity: 0.5 }}
+                    node={<SankeyNode />}
                   >
                     <Tooltip />
                   </Sankey>
