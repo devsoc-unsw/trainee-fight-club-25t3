@@ -68,7 +68,7 @@ export default function HeroSection() {
                                         asChild
                                         size="sm">
                                         <Link href="#">
-                                            <span>Login</span>
+                                            <span>Sign Up</span>
                                         </Link>
                                     </Button>
                                 </div>
