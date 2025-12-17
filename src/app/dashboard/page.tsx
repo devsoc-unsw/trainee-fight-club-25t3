@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Tooltip, Sankey } from "recharts";
 import SankeyNode from "@/app/components/sankey-node";
+import SignOutButton from "../components/ui/sign-out";
 
 export default function DashboardPage() {
   // temp hard coded data
@@ -54,7 +55,10 @@ export default function DashboardPage() {
           </nav>
 
           <div className="border-t border-white/10 px-6 py-4">
-            <div className="text-sm font-medium">Profile</div>
+            <div className="flex justify-between items-center">
+              <div className="text-sm font-medium">Profile</div>
+              <SignOutButton/>
+            </div>
           </div>
         </aside>
 
