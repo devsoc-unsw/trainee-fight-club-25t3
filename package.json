@@ -7,11 +7,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "prettier": "npx prettier --write ."
+    "prettier": "npx prettier --write .",
+    "lint:fix": "eslint --fix \"src/**/*.{js,jsx,ts,tsx}\" --no-error-on-unmatched-pattern"
   },
   "dependencies": {
+    "@radix-ui/react-label": "^2.1.8",
     "@radix-ui/react-slot": "^1.2.4",
-    "@supabase/supabase-js": "^2.86.0",
+    "@supabase/supabase-js": "^2.88.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.561.0",
