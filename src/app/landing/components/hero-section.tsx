@@ -5,7 +5,6 @@ import { useState } from 'react'
 import { Button } from './ui/button'
 import { Menu, X } from 'lucide-react'
 import Image from 'next/image'
-import { ThemeToggleButton } from './ThemeToggleButton'
 
 const menuItems = [
     { name: 'Features', href: '#' },
@@ -70,7 +69,6 @@ export default function HeroSection() {
                                             <span>Sign Up</span>
                                         </Link>
                                     </Button>
-                                    <ThemeToggleButton />
                                 </div>
                             </div>
                         </div>
