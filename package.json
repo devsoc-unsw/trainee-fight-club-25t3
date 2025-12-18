@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.86.0",
-    "next": "16.0.1",
+    "next": "^16.0.10",
     "prettier": "^3.7.1",
     "react": "19.2.0",
     "react-dom": "19.2.0",

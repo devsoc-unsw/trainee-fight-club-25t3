@@ -106,14 +106,14 @@ export default function HeroSection() {
                             <div className="lg:h-176 rotate-x-20 mask-b-from-55% mask-b-to-100% mask-r-from-75% skew-x-12 pl-6 pt-6">
                                 <Image
                                     className="rounded-(--radius) border shadow-xl dark:hidden"
-                                    src="/dashboard_img.png"
+                                    src="/dashboard_img.webp"
                                     alt="Dashboard Preview"
                                     width={2880}
                                     height={2074}
                                 />
                                 <Image
                                     className="rounded-(--radius) hidden border shadow-xl dark:block"
-                                    src="/dashboard_img.png"
+                                    src="/dashboard_img.webp"
                                     alt="Dashboard Preview"
                                     width={2880}
                                     height={2074}
