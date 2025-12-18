@@ -90,7 +90,6 @@ export default function HeroSection() {
                         <div className="relative z-10 mx-auto max-w-2xl text-center">
                             <h1 className="text-balance text-4xl font-semibold md:text-5xl lg:text-6xl">Expense Tracking made seamless</h1>
                             <p className="text-muted-foreground mx-auto my-8 max-w-2xl text-xl"><strong>Your money, <i>finally</i> working for you.</strong></p>
-
                             <Button
                                 asChild
                                 size="lg">
