@@ -3,8 +3,42 @@
 import Link from "next/link";
 import { Tooltip, Sankey } from "recharts";
 import SankeyNode from "@/app/components/sankey-node";
+import SignOutButton from "../components/ui/sign-out";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/app/lib/supabaseClient";
+import { Loader2 as Spinner } from "lucide-react";
 
 export default function DashboardPage() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+
+  // Check if User is Logined In - other wise redirect to login
+  useEffect(() => {
+    const checkUser = async () => {
+      // Check if a session exists
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (!session) {
+        // If no user, redirect to login
+        router.push("/auth/login");
+      } else {
+        // If user, loading is turned off
+        setLoading(false);
+      }
+    };
+
+    checkUser();
+  }, [router]);
+
+  // Loading Screen
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#09090b]">
+        <Spinner className="h-8 w-8 animate-spin text-purple-600" />
+      </div>
+    );
+  }
   // temp hard coded data
   const sankeyData = {
     nodes: [
@@ -54,7 +88,10 @@ export default function DashboardPage() {
           </nav>
 
           <div className="border-t border-white/10 px-6 py-4">
-            <div className="text-sm font-medium">Profile</div>
+            <div className="flex justify-between items-center">
+              <div className="text-sm font-medium">Profile</div>
+              <SignOutButton/>
+            </div>
           </div>
         </aside>
 
