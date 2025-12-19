@@ -52,10 +52,10 @@ export default function UpdatePasswordPage() {
 
   if (success) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#09090b] p-4">
-        <div className="w-full max-w-md space-y-4 rounded-lg bg-zinc-900 p-6 text-center">
-          <h2 className="text-2xl font-semibold text-white">Password Updated</h2>
-          <p className="text-zinc-400">
+      <div className="flex min-h-screen items-center justify-center bg-background p-4 text-foreground">
+        <div className="w-full max-w-md space-y-4 rounded-lg border border-border bg-card p-6 text-center shadow-sm">
+          <h2 className="text-2xl font-semibold">Password Updated</h2>
+          <p className="text-muted-foreground">
             Your password has been successfully updated. Redirecting you to the dashboard...
           </p>
         </div>
@@ -64,22 +64,22 @@ export default function UpdatePasswordPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#09090b] p-4">
-      <form onSubmit={handleSubmit} className="w-full max-w-md space-y-6 rounded-lg bg-zinc-900 p-6">
+    <div className="flex min-h-screen items-center justify-center bg-background p-4 text-foreground">
+      <form onSubmit={handleSubmit} className="w-full max-w-md space-y-6 rounded-lg border border-border bg-card p-6 shadow-sm">
         <div className="space-y-2 text-center">
-          <h2 className="text-2xl font-semibold text-white">Set New Password</h2>
-          <p className="text-zinc-400">Enter your new password below</p>
+          <h2 className="text-2xl font-semibold">Set New Password</h2>
+          <p className="text-muted-foreground">Enter your new password below</p>
         </div>
 
         {error && (
-          <div className="rounded-md bg-red-900/50 p-3 text-sm text-red-400">
+          <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive-foreground border border-destructive/20">
             {error}
           </div>
         )}
 
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="password" className="text-zinc-300">
+            <Label htmlFor="password">
               New Password
             </Label>
             <Input
@@ -88,13 +88,12 @@ export default function UpdatePasswordPage() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="border-zinc-800 bg-zinc-800 text-white focus:border-purple-600 focus:ring-purple-600"
               disabled={isLoading}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="confirmPassword" className="text-zinc-300">
+            <Label htmlFor="confirmPassword">
               Confirm New Password
             </Label>
             <Input
@@ -103,14 +102,13 @@ export default function UpdatePasswordPage() {
               required
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="border-zinc-800 bg-zinc-800 text-white focus:border-purple-600 focus:ring-purple-600"
               disabled={isLoading}
             />
           </div>
 
           <Button
             type="submit"
-            className="w-full bg-purple-600 hover:bg-purple-700"
+            className="w-full"
             disabled={isLoading}
           >
             {isLoading && <Spinner className="mr-2 h-4 w-4 animate-spin" />}

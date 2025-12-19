@@ -18,30 +18,32 @@ export default function SankeyNode({
         y={y}
         width={width}
         height={height}
-        fill="#2563EB" // blue-600
-        stroke="#1E40AF" // blue-800
+        fill="var(--primary)" 
+        stroke="var(--primary)" 
         strokeWidth={1}
         rx={3}
       />
 
+      {/* Node Name */}
       <text
         textAnchor={isOut ? "end" : "start"}
         x={isOut ? x - 8 : x + width + 8}
         y={y + height / 2}
         dominantBaseline="middle"
         fontSize={13}
-        fill="#E5E7EB" // gray-200
+        fill="var(--foreground)" 
         fontWeight={500}
       >
         {payload.name}
       </text>
 
+      {/* Node Value */}
       <text
         textAnchor={isOut ? "end" : "start"}
         x={isOut ? x - 8 : x + width + 8}
         y={y + height / 2 + 16}
         fontSize={12}
-        fill="#E5E7EB" // gray-400
+        fill="var(--muted-foreground)"
       >
         ${payload.value}
       </text>

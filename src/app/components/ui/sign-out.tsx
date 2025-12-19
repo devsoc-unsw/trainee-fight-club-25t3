@@ -31,7 +31,7 @@ export default function SignOutButton() {
       variant="ghost"
       onClick={handleSignOut}
       disabled={isLoading}
-      className="text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+      className="text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors cursor-pointer"
     >
       {isLoading ? (
         <Spinner className="mr-2 h-4 w-4 animate-spin" />

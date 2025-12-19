@@ -8,7 +8,7 @@ import Image from 'next/image'
 import { ModeToggle } from './mode-toggle'
 
 const menuItems = [
-    { name: 'Features', href: '#' },
+    { name: 'Features', href: '#app-feature' },
     { name: 'About', href: '#' },
 ]
 
@@ -95,7 +95,7 @@ export default function HeroSection() {
                             <Button
                                 asChild
                                 size="lg">
-                                <Link href="#">
+                                <Link href="/dashboard">
                                     <span className="btn-label">Start tracking</span>
                                 </Link>
                             </Button>
