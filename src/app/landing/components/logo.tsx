@@ -8,7 +8,7 @@ export const Logo = ({ className, uniColor }: { className?: string; uniColor?: b
             xmlns="http://www.w3.org/2000/svg"
             className={cn('text-foreground h-5 w-auto', className)}>
             <image 
-                href="/zanki_logo_possibly-removebg-preview-2.png" 
+                href="/zanki_logo_possibly-removebg-preview-3-removebg-preview.png" 
                 x="-40"
                 y="-12" 
                 width="40" 

@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { Button } from './ui/button'
 import { Menu, X } from 'lucide-react'
 import Image from 'next/image'
+import { ModeToggle } from './mode-toggle'
 
 const menuItems = [
     { name: 'Features', href: '#' },
@@ -68,7 +69,8 @@ export default function HeroSection() {
                                         <Link href="#">
                                             <span>Sign Up</span>
                                         </Link>
-                                    </Button>
+                                    </Button>     
+                                    <ModeToggle />                   
                                 </div>
                             </div>
                         </div>
