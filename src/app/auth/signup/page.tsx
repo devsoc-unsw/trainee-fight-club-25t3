@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { supabase } from "@/app/lib/supabaseClient";
-import { Label } from "@/app/components/ui/label";
-import { Input } from "@/app/components/ui/input";
-import { Button } from "@/app/components/ui/button";
+import { createClient } from "@/utils/client";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Loader2 as Spinner } from "lucide-react";
 
 export default function SignupPage() {
@@ -23,6 +23,7 @@ export default function SignupPage() {
     setIsLoading(true);
 
     try {
+      const supabase = createClient();
       const { error } = await supabase.auth.signUp({
         email,
         password,

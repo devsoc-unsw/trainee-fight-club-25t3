@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { supabase } from '../../lib/supabaseClient'
+import { createClient } from '@/utils/client'
 
 export default function CallbackPage() {
   const router = useRouter()
@@ -12,7 +12,8 @@ export default function CallbackPage() {
   useEffect(() => {
     const handleAuth = async () => {
       if (code) {
-        await supabase.auth.exchangeCodeForSession(code)
+        const supabase = createClient();
+        await supabase.auth.exchangeCodeForSession(code);
       }
       // Clean up the URL and redirect
       window.history.replaceState({}, document.title, window.location.pathname)
