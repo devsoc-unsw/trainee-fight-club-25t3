@@ -124,7 +124,6 @@ export default function DashboardPage() {
             <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
               <div className="grid gap-6">
                 
-                {/* 6. Chart Container: Needs explicit border/card style */}
                 <div className="rounded-lg border border-border bg-card/50 p-6 min-w-xl">
                   <h2 className="text-lg font-semibold mb-4">Sankey Chart</h2>
                   <Sankey
