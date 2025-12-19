@@ -23,8 +23,8 @@ export default function CallbackPage() {
   }, [code, router])
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#09090b]">
-      <div className="text-white">Signing you in...</div>
+    <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="text-foreground">Signing you in...</div>
     </div>
   )
 }
