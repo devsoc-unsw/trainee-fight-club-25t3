@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/app/lib/supabaseClient";
 import { Loader2 as Spinner } from "lucide-react";
+import { ModeToggle } from "../components/mode-toggle";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -60,15 +61,17 @@ export default function DashboardPage() {
 
   return (
     <>
-      <div className="flex h-screen bg-black-700 text-white">
+      <div className="flex h-screen bg-black-800 text-white">
         <aside className="flex w-64 flex-col border-r border-white/10 bg-[#161616]">
-          <div className="flex h-16 items-center px-6 border-b border-white/10">
+          <div className="flex h-16 justify-between items-center px-6 border-b border-white/10">
             <Link
               href="/"
               className="text-3xl font-semibold tracking-tight text-[oklch(0.627_0.265_303.9)]"
             >
               Zanki
             </Link>
+
+            <ModeToggle /> 
           </div>
 
           <nav className="flex flex-1 flex-col gap-2 px-4 py-6">
