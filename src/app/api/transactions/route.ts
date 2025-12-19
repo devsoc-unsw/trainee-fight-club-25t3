@@ -27,20 +27,20 @@ export async function POST(request: Request) {
     const frequencyMap: Record<string, number> = {};
 
     const formattedData = transactions.map((t: any) => {
-      // 3. Clean the inputs
+      // Clean the inputs
       const debitVal = t.debit ? Math.abs(parseFloat(t.debit)) : null;
       const creditVal = t.credit ? Math.abs(parseFloat(t.credit)) : null;
       
-      // 4. Calculate the "Net Amount" for easy math later
+      // Calculate the "Net Amount" for easy math later
       const netAmount = creditVal ? creditVal : (debitVal ? -debitVal : 0);
 
-      // 5. Clean balance string (remove "$" and "CR")
+      // Clean balance string (remove "$" and "CR")
       const cleanBalance = parseFloat(t.balance.replace(/[$,]/g, '').replace(' CR', ''));
       
-      // 6. Generate Hash
+      // Generate Hash
       const baseHash = generateBaseHash(t.date, t.description, debitVal, creditVal, cleanBalance);
 
-      // 7. Handle duplicates in the same batch
+      // Handle duplicates in the same batch
       if (frequencyMap[baseHash]) {
         frequencyMap[baseHash] += 1;
       } else {
@@ -49,7 +49,7 @@ export async function POST(request: Request) {
       const uniqueHash = `${baseHash}-${frequencyMap[baseHash]}`;
 
       return {
-        user_id: user.id, // ✅ Use 'user.id' directly
+        user_id: user.id,
         date: t.date,
         description: t.description,
         debit: debitVal,   
@@ -77,3 +77,20 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
+export async function GET(request:Request) {
+    // Initialize Supabase
+  const supabase = await createClient();
+
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    console.error('Auth Error:', authError?.message);
+    return NextResponse.json({ error: 'Unauthorized: No active user found' }, { status: 401 });
+  }
+
+  const { data, error } = await supabase.from('transactions').select('*').eq('user_id', user.id);
+
+  return NextResponse.json({ data, error });
+}
+
