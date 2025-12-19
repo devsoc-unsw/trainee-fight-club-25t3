@@ -94,3 +94,26 @@ export async function GET(request:Request) {
   return NextResponse.json({ data, error });
 }
 
+
+export async function DELETE(request: Request) {
+  // Initialize Supabase
+  const supabase = await createClient();
+
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    console.error('Auth Error:', authError?.message);
+    return NextResponse.json({ error: 'Unauthorized: No active user found' }, { status: 401 });
+  }
+
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get('id');
+
+  if (!id) {
+    return NextResponse.json({ error: 'Missing "id" parameter' }, { status: 400 });
+  }
+
+  const { data, error } = await supabase.from('transactions').delete().eq('id', id).eq('user_id', user.id);
+
+  return NextResponse.json({ data, error });
+}

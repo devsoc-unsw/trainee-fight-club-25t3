@@ -31,7 +31,19 @@ export async function proxy(request: NextRequest) {
     }
   )
 
-  await supabase.auth.getUser()
+  const { data: { user }, error } = await supabase.auth.getUser();
+
+  if (error || !user) {
+  // If no user or error, redirect to login
+  const isDashboardPage = request.nextUrl.pathname.startsWith('/dashboard');
+
+  // 2. If no user and NOT on login page -> Redirect to login
+  if (!user && isDashboardPage) {
+    const url = request.nextUrl.clone();
+    url.pathname = '/auth/login';
+    return NextResponse.redirect(url);
+  }
+  }
 
   return response
 }
