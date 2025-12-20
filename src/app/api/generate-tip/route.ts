@@ -12,8 +12,8 @@ export async function POST(req: Request) {
     if (!process.env.PPLX_API_KEY) {
       console.error("Missing PPLX_API_KEY");
       return NextResponse.json(
-        { error: "Server config error: Missing API Key" }, 
-        { status: 500 }
+        { error: "Server config error: Missing API Key" },
+        { status: 500 },
       );
     }
 
@@ -41,15 +41,15 @@ export async function POST(req: Request) {
       messages: [
         {
           role: "system",
-          content: "You are a helpful financial assistant."
+          content: "You are a helpful financial assistant.",
         },
         {
           role: "user",
-          content: prompt
+          content: prompt,
         },
       ],
       // Optional: limit tokens or temperature if needed
-      temperature: 0.7, 
+      temperature: 0.7,
     };
 
     // 4. Call Perplexity API
@@ -69,17 +69,16 @@ export async function POST(req: Request) {
     }
 
     const data = await res.json();
-    
+
     // Perplexity follows the OpenAI response schema
     const tip = data.choices[0]?.message?.content || "No tip generated.";
 
     return NextResponse.json({ tip });
-
   } catch (error: any) {
     console.error("API Route Error:", error);
     return NextResponse.json(
-      { error: error.message || "Failed to generate tip" }, 
-      { status: 500 }
+      { error: error.message || "Failed to generate tip" },
+      { status: 500 },
     );
   }
 }

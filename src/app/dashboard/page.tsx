@@ -89,10 +89,10 @@ export default function DashboardPage() {
       <h1 className="text-3xl font-bold mb-6">Financial Overview</h1>
 
       {metrics && (
-      <div className="mb-8">
-        <TipCard metrics={metrics} />
-      </div>
-    )}
+        <div className="mb-8">
+          <TipCard metrics={metrics} />
+        </div>
+      )}
 
       {/* --- Metrics Section --- */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-8">
@@ -216,8 +216,6 @@ export default function DashboardPage() {
             </div>
           )}
         </div>
-
-        
       </div>
     </div>
   );
