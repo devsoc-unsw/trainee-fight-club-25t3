@@ -17,7 +17,7 @@ export default function NotFound() {
       </div>
     
       <Button
-        onClick={() => router.push('/')}
+        onClick={() => router.push('/dashboard')}
         size="lg"
       >
         Return to Home

@@ -1,6 +1,7 @@
 "use client";
 import React, { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { UploadCloud } from "lucide-react"; // Ideally use an icon if you have lucide-react installed
 
 type Txn = {
   id: string;
@@ -192,6 +193,8 @@ export default function DataEntryPage() {
       }
 
       const data = await analyzeRes.json();
+
+      // store data for sankey chart
       console.log("Nodes:", data.sankey_data.nodes);
       console.log("Links:", data.sankey_data.links);
 
@@ -201,8 +204,20 @@ export default function DataEntryPage() {
         nodes: data.sankey_data.nodes,
         links: data.sankey_data.links,
       };
-
       localStorage.setItem("sankeyData", JSON.stringify(sankeyData));
+
+      // store data for other metrics
+      const metricsData = {
+        total_spent: data.total_spent,
+        total_received: data.total_received,
+        net_cash_flow: data.net_cash_flow,
+        transaction_count: data.transaction_count,
+        category_summary: data.category_summary
+      };
+
+      localStorage.setItem("analysisMetrics", JSON.stringify(metricsData));
+
+
     } catch (err) {
       console.error(err);
       setPdfMsg("Error processing PDF.");
@@ -213,7 +228,7 @@ export default function DataEntryPage() {
       <main className="flex-1 overflow-y-auto p-8">
         <h1 className="text-xl font-semibold mb-6 text-foreground">Entry</h1>
 
-        <div className="rounded-lg border border-border bg-card shadow-sm">
+        <div className="rounded-lg border border-border bg-card shadow-sm mb-8">
           <form onSubmit={handleSave} className="p-6">
             <div className="grid grid-cols-[130px_200px_180px_110px_110px_120px_50px] gap-3 px-2 pb-3 text-sm font-bold text-muted-foreground">
               <div>Date</div>
@@ -360,23 +375,38 @@ export default function DataEntryPage() {
           </form>
         </div>
 
-        <div style={{ padding: 24, maxWidth: 420 }}>
-        <h2>Upload PDF</h2>
-          <form onSubmit={handlePdfUpload}>
-            <div style={{ marginBottom: 10 }}>
+        {/* Improved Upload PDF Section */}
+        <div className="rounded-lg border border-border bg-card shadow-sm p-6 max-w-xl">
+          <h2 className="text-lg font-semibold mb-4 text-foreground flex items-center gap-2">
+            <UploadCloud className="w-5 h-5 text-primary" /> 
+            Upload Bank Statement
+          </h2>
+          <form onSubmit={handlePdfUpload} className="flex flex-col gap-4">
+            <div className="relative">
               <input
                 type="file"
                 accept="application/pdf"
                 onChange={(e) => {
                   if (e.target.files) setPdfFile(e.target.files[0]);
                 }}
-                style={{ width: "100%", padding: 10 }}
+                className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground shadow-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50
+                file:mr-4 file:py-1 file:px-3 file:rounded-md file:bg-secondary file:text-secondary-foreground hover:file:bg-secondary/80 file:transition-colors"
               />
             </div>
-            <button type="submit" disabled={!pdfFile}>
-              Parse PDF
+            
+            <button 
+              type="submit" 
+              disabled={!pdfFile}
+              className="w-full md:w-auto px-4 py-2 rounded-md bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Submit
             </button>
-            {pdfMsg && <p style={{ marginTop: 10 }}>{pdfMsg}</p>}
+            
+            {pdfMsg && (
+              <p className={`text-sm font-medium ${pdfMsg.includes("Success") || pdfMsg.includes("complete") ? "text-green-500" : "text-muted-foreground"}`}>
+                {pdfMsg}
+              </p>
+            )}
           </form>
         </div>
       </main>       
