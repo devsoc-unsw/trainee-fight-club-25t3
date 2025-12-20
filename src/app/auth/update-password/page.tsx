@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { createClient } from '@/utils/client'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Loader2 as Spinner } from 'lucide-react'
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/utils/client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Loader2 as Spinner } from "lucide-react";
 
 export default function UpdatePasswordPage() {
   const router = useRouter();

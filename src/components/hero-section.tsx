@@ -104,16 +104,16 @@ export default function HeroSection() {
                 </Link>
               </Button>
             </div>
-          </div>          
+          </div>
           <div className="mx-auto 2xl:max-w-7xl">
             <div className="perspective-distant pl-8 lg:pl-44">
               <div className="lg:h-176 rotate-x-20 mask-b-from-55% mask-b-to-100% mask-r-from-75% skew-x-12 pl-6 pt-6">
-                <Image 
-                    src="/dashboard_img.png" // Note: No "public" in the path string
-                    alt="Zanki Dashboard Design"
-                    width={1200} // Approximate width
-                    height={800} // Approximate height
-                    priority // Loads it immediately
+                <Image
+                  src="/dashboard_img.png" // Note: No "public" in the path string
+                  alt="Zanki Dashboard Design"
+                  width={1200} // Approximate width
+                  height={800} // Approximate height
+                  priority // Loads it immediately
                 />
                 <Image
                   className="rounded-(--radius) border shadow-xl dark:hidden"

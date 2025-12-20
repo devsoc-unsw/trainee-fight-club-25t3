@@ -88,7 +88,6 @@ export default function DashboardPage() {
 
       {/* --- Metrics Section --- */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-8">
-        
         {/* Net Cash Flow */}
         <div className="rounded-lg border border-border bg-card p-6 shadow-sm flex flex-col justify-between">
           <div>
@@ -163,7 +162,6 @@ export default function DashboardPage() {
       <div className="grid gap-6">
         <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
           <div className="grid gap-6">
-            
             {/* Sankey Chart */}
             <div className="rounded-lg border border-border bg-card/50 p-6 min-w-xl overflow-x-auto">
               <h2 className="text-lg font-semibold mb-4">Sankey Chart</h2>

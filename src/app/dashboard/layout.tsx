@@ -1,10 +1,14 @@
-import { AppSidebar } from "@/components/app-sidebar"
-import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
+import { AppSidebar } from "@/components/app-sidebar";
+import {
+  SidebarProvider,
+  SidebarInset,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
 
 export default function DashboardLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <SidebarProvider>
@@ -14,10 +18,8 @@ export default function DashboardLayout({
           <SidebarTrigger className="-ml-1" />
           <div className="h-4 w-px bg-border/50" />
         </header>
-        <div className="flex-1 overflow-y-auto p-4">
-            {children}
-        </div>
+        <div className="flex-1 overflow-y-auto p-4">{children}</div>
       </SidebarInset>
     </SidebarProvider>
-  )
+  );
 }
