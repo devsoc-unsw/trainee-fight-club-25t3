@@ -117,3 +117,23 @@ export async function DELETE(request: Request) {
 
   return NextResponse.json({ data, error });
 }
+export async function PATCH(request: Request) {
+  const supabase = await createClient();
+  const body = await request.json();
+
+  // Update ALL fields
+  const { error } = await supabase
+    .from('transactions')
+    .update({ 
+      date: body.date,
+      description: body.description, 
+      category: body.category, 
+      debit: body.debit,    
+      credit: body.credit,  
+      amount: body.amount,  
+      balance: body.balance
+    })
+    .eq('id', body.id);
+
+  return NextResponse.json({ error });
+}
