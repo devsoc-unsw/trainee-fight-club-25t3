@@ -1,9 +1,6 @@
 "use client";
 import React, { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { ModeToggle } from "../components/mode-toggle";
-import SignOutButton from "../components/ui/sign-out";
 
 type Txn = {
   id: string;
