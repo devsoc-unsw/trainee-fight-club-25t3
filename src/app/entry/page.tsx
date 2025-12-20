@@ -94,40 +94,57 @@ export default function DataEntryPage() {
     return "";
   }
 
-  async function handleSave(e: React.FormEvent) {
-    e.preventDefault();
-    setMsg("");
+ async function handleSave(e: React.FormEvent) {
+  e.preventDefault();
+  setMsg("");
 
-    const err = validateRows();
-    if (err) {
-      setMsg(err);
-      return;
-    }
+  const err = validateRows();
+  if (err) {
+    setMsg(err);
+    return;
+  }
 
-    const transactionsToSend = rows
-      .filter((r) => r.description.trim() || r.category || r.debit || r.credit)
-      .map((r) => ({
+  // Filter and Map rows to match the API expectation
+  const transactionsToSend = rows
+    .map((r, index) => {
+      // We map using the index to grab the calculated balance for this row
+      const currentBalance = balances[index]; 
+      
+      return {
         date: r.date,
         description: r.description.trim(),
         category: r.category,
-        debit: toNum(r.debit),
-        credit: toNum(r.credit),
-      }));
+        debit: r.debit,   // Sending as string or number is fine, your API parses it
+        credit: r.credit,
+        // CRITICAL: Convert balance to string because your API calls .replace() on it
+        balance: currentBalance.toFixed(2).toString() 
+      };
+    })
+    // Filter out empty rows (where nothing was entered)
+    .filter((t) => t.description || t.debit || t.credit);
 
-    setSaving(true);
-    try {
-      const res = await fetch("/api/entries", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ transactions: transactionsToSend }),
-      });
+  setSaving(true);
+  
+  try {
+    const res = await fetch("/api/transactions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ transactions: transactionsToSend }),
+    });
 
-      router.push("/dashboard");
-    } catch {
-      setMsg("Network error.");
-      setSaving(false);
+    const result = await res.json();
+
+    if (!res.ok) {
+      throw new Error(result.error || "Failed to save");
     }
+
+    router.push("/dashboard");
+  } catch (error: any) {
+    console.error(error);
+    setMsg(error.message || "Network error.");
+    setSaving(false);
   }
+}
 
   async function handlePdfUpload(e: React.FormEvent) {
     e.preventDefault();
