@@ -1,49 +1,150 @@
 "use client";
-
-import React from "react";
-import { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { ModeToggle } from "../components/mode-toggle";
+import SignOutButton from "../components/ui/sign-out";
+
+type Txn = {
+  id: string;
+  date: string;
+  description: string;
+  category: string;
+  debit: string;
+  credit: string;
+};
+
+const CATEGORIES = [
+  "Income",
+  "Transport",
+  "Food & Dining",
+  "Entertainment",
+  "Shopping",
+  "Health & Fitness",
+  "Bills & Utilities",
+  "Subscriptions",
+  "Transfers & Savings",
+  "Rent & Housing",
+  "Personal",
+];
+
+function todayISO() {
+  return new Date().toISOString().slice(0, 10);
+}
+function uid() {
+  return Math.random().toString(36).slice(2, 10);
+}
+function toNum(x: string) {
+  const n = Number(x);
+  return Number.isFinite(n) ? n : 0;
+}
 
 export default function DataEntryPage() {
   const router = useRouter();
-
-  const [source, setSource] = useState("");
-  const [target, setTarget] = useState("");
-  const [amount, setAmount] = useState("");
-  const [msg, setMsg] = useState("");
-
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [pdfMsg, setPdfMsg] = useState("");
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setMsg("");
+  const [startingBalance] = useState<number>(1000);
+  const [rows, setRows] = useState<Txn[]>([
+    { id: uid(), date: todayISO(), description: "", category: "", debit: "", credit: "" },
+    { id: uid(), date: todayISO(), description: "", category: "", debit: "", credit: "" },
+  ]);
 
-    if (!source.trim() || !target.trim() || !amount) {
-      setMsg("Fill source, target, and amount.");
-      return;
-    }
+  const [msg, setMsg] = useState("");
+  const [saving, setSaving] = useState(false);
+  const balances = useMemo(() => {
+    let bal = startingBalance;
+    return rows.map((r) => {
+      bal = bal - toNum(r.debit) + toNum(r.credit);
+      return bal;
+    });
+  }, [rows, startingBalance]);
 
-    try {
-      const res = await fetch("/api/entries", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          source: source.trim(),
-          target: target.trim(),
-          amount: Number(amount),
-        }),
-      });
-      if (!res.ok) {
-        setMsg("Save failed.");
-        return;
-      }
-      setMsg("Saved!");
-      router.push("/dashboard");
-    } catch {
-      setMsg("Network error.");
-    }
+  function updateRow(id: string, patch: Partial<Txn>) {
+    setRows((prev) => prev.map((r) => (r.id === id ? { ...r, ...patch } : r)));
   }
+
+  function addRow() {
+    setRows((prev) => [
+      ...prev,
+      { id: uid(), date: todayISO(), description: "", category: "", debit: "", credit: "" },
+    ]);
+  }
+
+  function deleteRow(id: string) {
+    setRows((prev) => prev.filter((r) => r.id !== id));
+  }
+
+  function validateRows() {
+    const anyFilled = rows.some(
+      (r) => r.description.trim() || r.category || r.debit || r.credit
+    );
+    if (!anyFilled) return "Add at least one transaction.";
+
+    for (const r of rows) {
+      const d = toNum(r.debit);
+      const c = toNum(r.credit);
+      if (r.debit && r.credit && (d !== 0 || c !== 0)) {
+        return "For a row, fill either Debit OR Credit (not both).";
+      }
+      if ((r.debit || r.credit) && (!r.category || !r.description.trim())) {
+        return "If you enter an amount, please also add Description + Category.";
+      }
+    }
+    return "";
+  }
+
+ async function handleSave(e: React.FormEvent) {
+  e.preventDefault();
+  setMsg("");
+
+  const err = validateRows();
+  if (err) {
+    setMsg(err);
+    return;
+  }
+
+  // Filter and Map rows to match the API expectation
+  const transactionsToSend = rows
+    .map((r, index) => {
+      // We map using the index to grab the calculated balance for this row
+      const currentBalance = balances[index]; 
+      
+      return {
+        date: r.date,
+        description: r.description.trim(),
+        category: r.category,
+        debit: r.debit,   // Sending as string or number is fine, your API parses it
+        credit: r.credit,
+        // CRITICAL: Convert balance to string because your API calls .replace() on it
+        balance: currentBalance.toFixed(2).toString() 
+      };
+    })
+    // Filter out empty rows (where nothing was entered)
+    .filter((t) => t.description || t.debit || t.credit);
+
+  setSaving(true);
+  
+  try {
+    const res = await fetch("/api/transactions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ transactions: transactionsToSend }),
+    });
+
+    const result = await res.json();
+
+    if (!res.ok) {
+      throw new Error(result.error || "Failed to save");
+    }
+
+    router.push("/dashboard");
+  } catch (error: any) {
+    console.error(error);
+    setMsg(error.message || "Network error.");
+    setSaving(false);
+  }
+}
 
   async function handlePdfUpload(e: React.FormEvent) {
     e.preventDefault();
@@ -112,63 +213,175 @@ export default function DataEntryPage() {
   }
 
   return (
-    <>
-      <div style={{ padding: 24, maxWidth: 420 }}>
-        <h1>Manual Entry</h1>
+      <main className="flex-1 overflow-y-auto p-8">
+        <h1 className="text-xl font-semibold mb-6 text-foreground">Entry</h1>
 
-        <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: 10 }}>
-            <input
-              placeholder="Source"
-              value={source}
-              onChange={(e) => setSource(e.target.value)}
-              style={{ width: "100%", padding: 10 }}
-            />
-          </div>
+        <div className="rounded-lg border border-border bg-card shadow-sm">
+          <form onSubmit={handleSave} className="p-6">
+            <div className="grid grid-cols-[130px_200px_180px_110px_110px_120px_50px] gap-3 px-2 pb-3 text-sm font-bold text-muted-foreground">
+              <div>Date</div>
+              <div>Description</div>
+              <div>Category</div>
+              <div>Debit ($)</div>
+              <div>Credit ($)</div>
+              <div>Balance ($)</div>
+              <div></div>
+            </div>
 
-          <div style={{ marginBottom: 10 }}>
-            <input
-              placeholder="Target"
-              value={target}
-              onChange={(e) => setTarget(e.target.value)}
-              style={{ width: "100%", padding: 10 }}
-            />
-          </div>
+            <div className="flex flex-col gap-3">
+              {rows.map((r, idx) => (
+                <div
+                  key={r.id}
+                  className="grid grid-cols-[130px_200px_180px_110px_110px_120px_50px] gap-3 items-end p-2 rounded-lg border border-border bg-card/50"
+                >
+                  <div>
+                    <input
+                      type="date"
+                      value={r.date}
+                      onChange={(e) => {
+                        const newValue = e.target.value;
+                        updateRow(r.id, { date: newValue });
+                      }}
+                      className="w-full px-3 py-2 rounded-md border border-input bg-background text-foreground text-sm outline-none focus:ring-2 focus:ring-ring"
+                    />
+                  </div>
 
-          <div style={{ marginBottom: 10 }}>
-            <input
-              type="number"
-              placeholder="Amount"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              style={{ width: "100%", padding: 10 }}
-            />
-          </div>
+                  <div>
+                    <input
+                      type="text"
+                      value={r.description}
+                      onChange={(e) => {
+                        const newValue = e.target.value;
+                        updateRow(r.id, { description: newValue });
+                      }}
+                      placeholder="e.g. Woolworths"
+                      className="w-full px-3 py-2 rounded-md border border-input bg-background text-foreground text-sm outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
+                    />
+                  </div>
 
-          <button type="submit">Save</button>
-          {msg && <p>{msg}</p>}
-        </form>
-      </div>
+                  <div>
+                    <select
+                      value={r.category}
+                      onChange={(e) => {
+                        const newValue = e.target.value;
+                        updateRow(r.id, { category: newValue });
+                      }}
+                      className="w-full px-3 py-2 rounded-md border border-input bg-background text-foreground text-sm outline-none focus:ring-2 focus:ring-ring"
+                    >
+                      <option value="">Select…</option>
+                      {CATEGORIES.map((c) => (
+                        <option key={c} value={c}>
+                          {c}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
 
-      <div style={{ padding: 24, maxWidth: 420 }}>
+                  <div>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={r.debit}
+                      onChange={(e) => {
+                        const newValue = e.target.value;
+                        updateRow(r.id, { debit: newValue });
+                      }}
+                      placeholder="0.00"
+                      className="w-full px-3 py-2 rounded-md border border-input bg-background text-foreground text-sm outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
+                    />
+                  </div>
+
+                  <div>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={r.credit}
+                      onChange={(e) => {
+                        const newValue = e.target.value;
+                        updateRow(r.id, { credit: newValue });
+                      }}
+                      placeholder="0.00"
+                      className="w-full px-3 py-2 rounded-md border border-input bg-background text-foreground text-sm outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
+                    />
+                  </div>
+
+                  <div>
+                    <input
+                      readOnly
+                      value={balances[idx].toFixed(2)}
+                      className="w-full px-3 py-2 rounded-md border border-input bg-muted text-muted-foreground text-sm"
+                    />
+                  </div>
+
+                  <div className="flex items-end pb-0">
+                    <button
+                      type="button"
+                      onClick={() => deleteRow(r.id)}
+                      className="w-10 h-10 rounded-md border border-input bg-red-500 hover:bg-red-600 text-white transition text-base"
+                      title="Delete"
+                      aria-label="Delete row"
+                    >
+                      🗑
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-4">
+              <button
+                type="button"
+                onClick={addRow}
+                className="px-4 py-2 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground text-foreground text-sm font-semibold transition"
+              >
+                ➕ Add Transaction
+              </button>
+            </div>
+
+            {msg && (
+              <p className="mt-4 text-sm font-semibold text-red-500">{msg}</p>
+            )}
+
+            <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-border">
+              <button
+                type="button"
+                onClick={() => router.push("/dashboard")}
+                className="px-4 py-2 rounded-md border border-input bg-secondary hover:bg-secondary/80 text-secondary-foreground font-bold transition"
+                disabled={saving}
+              >
+                Cancel
+              </button>
+
+              <button
+                type="submit"
+                className="px-4 py-2 rounded-md bg-primary hover:bg-primary/90 text-primary-foreground font-bold transition"
+                disabled={saving}
+              >
+                {saving ? "Saving..." : "Save Transactions"}
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div style={{ padding: 24, maxWidth: 420 }}>
         <h2>Upload PDF</h2>
-        <form onSubmit={handlePdfUpload}>
-          <div style={{ marginBottom: 10 }}>
-            <input
-              type="file"
-              accept="application/pdf"
-              onChange={(e) => {
-                if (e.target.files) setPdfFile(e.target.files[0]);
-              }}
-              style={{ width: "100%", padding: 10 }}
-            />
-          </div>
-          <button type="submit" disabled={!pdfFile}>
-            Parse PDF
-          </button>
-          {pdfMsg && <p style={{ marginTop: 10 }}>{pdfMsg}</p>}
-        </form>
-      </div>
-    </>
+          <form onSubmit={handlePdfUpload}>
+            <div style={{ marginBottom: 10 }}>
+              <input
+                type="file"
+                accept="application/pdf"
+                onChange={(e) => {
+                  if (e.target.files) setPdfFile(e.target.files[0]);
+                }}
+                style={{ width: "100%", padding: 10 }}
+              />
+            </div>
+            <button type="submit" disabled={!pdfFile}>
+              Parse PDF
+            </button>
+            {pdfMsg && <p style={{ marginTop: 10 }}>{pdfMsg}</p>}
+          </form>
+        </div>
+      </main>       
   );
 }
