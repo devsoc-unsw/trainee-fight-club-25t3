@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Sankey, Tooltip } from "recharts";
 import { Loader2, TrendingUp, TrendingDown, DollarSign } from "lucide-react";
 import SankeyNode from "@/components/sankey-node";
+import SpendingPieChart from "@/components/spending-piechart";
 
 // Type definitions
 type CategorySummary = {
@@ -195,6 +196,18 @@ export default function DashboardPage() {
               )}
             </div>
           </div>
+        </div>
+
+        <div className="rounded-lg border border-border bg-card p-6 shadow-sm flex flex-col">
+          <h2 className="text-lg font-semibold mb-4">Spending Breakdown</h2>
+
+          {metrics && metrics.category_summary ? (
+            <SpendingPieChart data={metrics.category_summary} />
+          ) : (
+            <div className="flex h-full items-center justify-center text-muted-foreground/40">
+              <p>No spending data available.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
