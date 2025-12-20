@@ -104,7 +104,7 @@ export default function DataEntryPage() {
         links: data.sankey_data.links,
       };
 
-      // localStorage.setItem("sankeyData", JSON.stringify(sankeyData));
+      localStorage.setItem("sankeyData", JSON.stringify(sankeyData));
     } catch (err) {
       console.error(err);
       setPdfMsg("Error processing PDF.");
