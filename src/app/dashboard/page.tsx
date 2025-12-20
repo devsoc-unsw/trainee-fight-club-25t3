@@ -1,27 +1,51 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Tooltip, Sankey } from "recharts";
+import { Loader2 } from "lucide-react";
 import SankeyNode from "@/components/sankey-node";
 
+// Define a type for safety
+type SankeyData = {
+  nodes: { name: string }[];
+  links: { source: number; target: number; value: number }[];
+};
+
 export default function DashboardPage() {
-  // temp hard coded data
-  const sankeyData = {
-    nodes: [
-      { name: "Salary" },
-      { name: "Freelance" },
-      { name: "Rent" },
-      { name: "Food" },
-      { name: "Entertainment" },
-      { name: "Savings" },
-    ],
-    links: [
-      { source: 0, target: 2, value: 1200 },
-      { source: 0, target: 3, value: 400 },
-      { source: 0, target: 5, value: 300 },
-      { source: 1, target: 3, value: 200 },
-      { source: 1, target: 4, value: 150 },
-    ],
-  };
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const [chartData, setChartData] = useState<SankeyData | null>(null);
+
+  useEffect(() => {
+    const checkUser = async () => {
+      // Simulate a quick check or just proceed
+      setLoading(false);
+
+      // Get sankey data from local storage
+      if (typeof window !== "undefined") {
+        const storedData = localStorage.getItem("sankeyData");
+        if (storedData) {
+          try {
+            setChartData(JSON.parse(storedData));
+          } catch (e) {
+            console.error("Failed to parse local storage data", e);
+          }
+        }
+      }
+    };
+
+    checkUser();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -50,7 +74,7 @@ export default function DashboardPage() {
           <p className="mt-2 text-2xl font-semibold">Rent</p>
           <p className="text-sm text-muted-foreground">$4,000</p>
         </div>
-      </div>
+      </div> 
 
       {/* Charts Area */}
       <div className="grid gap-6">
@@ -60,27 +84,31 @@ export default function DashboardPage() {
             {/* Sankey Chart Container */}
             <div className="rounded-lg border border-border bg-card/50 p-6 min-w-xl overflow-x-auto">
               <h2 className="text-lg font-semibold mb-4">Sankey Chart</h2>
-              <Sankey
-                width={700}
-                height={400}
-                data={sankeyData}
-                nodePadding={50}
-                nodeWidth={15}
-                margin={{ top: 20, bottom: 20, left: 20, right: 120 }}
-                link={{ stroke: "#4ade80", strokeOpacity: 0.5 }}
-                node={<SankeyNode />}
-              >
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "var(--popover)",
-                    borderColor: "var(--border)",
-                    color: "var(--popover-foreground)",
-                  }}
-                  itemStyle={{
-                    color: "var(--popover-foreground)",
-                  }}
-                />
-              </Sankey>
+              
+              {chartData ? (
+                <Sankey
+                  width={700}
+                  height={600}
+                  data={chartData}
+                  nodePadding={20}
+                  nodeWidth={15}
+                  margin={{ top: 10, bottom: 50, left: 10, right: 10 }}
+                  link={{ stroke: "#ffffff", strokeOpacity: 0.5 }}
+                  node={<SankeyNode />}
+                >
+                  <Tooltip />
+                </Sankey>
+              ) : (
+                <div className="flex h-[300px] flex-col items-center justify-center text-muted-foreground/40">
+                  <p>No data found.</p>
+                  <Link
+                    href="/entry"
+                    className="text-primary hover:underline mt-2"
+                  >
+                    Upload a statement
+                  </Link>
+                </div>
+              )}
             </div>
 
             <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
