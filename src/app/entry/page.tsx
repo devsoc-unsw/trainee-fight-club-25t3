@@ -3,7 +3,7 @@ import React, { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ModeToggle } from "../components/mode-toggle";
-import SignOutButton from "../components/ui/sign-out";
+import SignOutButton from "../components/ui/sign-out":
 
 type Txn = {
   id: string;
@@ -123,6 +123,72 @@ export default function DataEntryPage() {
     } catch {
       setMsg("Network error.");
       setSaving(false);
+    }
+  }
+
+  async function handlePdfUpload(e: React.FormEvent) {
+    e.preventDefault();
+    setPdfMsg("");
+
+    if (!pdfFile) {
+      setPdfMsg("Please select a PDF file.");
+      return;
+    }
+
+    try {
+      // parse pdf into raw text
+      const formData = new FormData();
+      formData.append("pdfFile", pdfFile);
+
+      const parseRes = await fetch("/api/parse-pdf", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!parseRes.ok) {
+        setPdfMsg("Failed to parse PDF.");
+        return;
+      }
+
+      const parseData = await parseRes.json();
+      const rawText = parseData.text;
+
+      setPdfMsg("PDF parsed! Analysing...");
+
+      // send raw pdf text to the parser
+      const analyzeRes = await fetch(
+        "https://bank-statement-parser-tp25t3-production.up.railway.app/analyze",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            raw_statement: rawText,
+          }),
+        },
+      );
+
+      if (!analyzeRes.ok) {
+        setPdfMsg("Failed to analyse statement.");
+        return;
+      }
+
+      const data = await analyzeRes.json();
+      console.log("Nodes:", data.sankey_data.nodes);
+      console.log("Links:", data.sankey_data.links);
+
+      setPdfMsg("Analysis complete!");
+
+      const sankeyData = {
+        nodes: data.sankey_data.nodes,
+        links: data.sankey_data.links,
+      };
+
+      localStorage.setItem("sankeyData", JSON.stringify(sankeyData));
+    } catch (err) {
+      console.error(err);
+      setPdfMsg("Error processing PDF.");
     }
   }
 
@@ -320,6 +386,6 @@ export default function DataEntryPage() {
           </form>
         </div>
       </main>
-    </div>
+    </div>        
   );
 }
