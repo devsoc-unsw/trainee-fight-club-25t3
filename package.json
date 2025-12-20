@@ -11,6 +11,7 @@
     "lint:fix": "eslint --fix \"src/**/*.{js,jsx,ts,tsx}\" --no-error-on-unmatched-pattern"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@radix-ui/react-alert-dialog": "^1.1.15",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-dropdown-menu": "^2.1.16",

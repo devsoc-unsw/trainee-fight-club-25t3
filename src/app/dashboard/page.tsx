@@ -6,6 +6,7 @@ import { Sankey, Tooltip } from "recharts";
 import { Loader2, TrendingUp, TrendingDown, DollarSign } from "lucide-react";
 import SankeyNode from "@/components/sankey-node";
 import SpendingPieChart from "@/components/spending-piechart";
+import TipCard from "@/components/tip-card";
 
 // Type definitions
 type CategorySummary = {
@@ -86,6 +87,12 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6 p-8">
       <h1 className="text-3xl font-bold mb-6">Financial Overview</h1>
+
+      {metrics && (
+      <div className="mb-8">
+        <TipCard metrics={metrics} />
+      </div>
+    )}
 
       {/* --- Metrics Section --- */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-8">
@@ -209,6 +216,8 @@ export default function DashboardPage() {
             </div>
           )}
         </div>
+
+        
       </div>
     </div>
   );
