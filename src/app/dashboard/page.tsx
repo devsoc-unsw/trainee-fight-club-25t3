@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/app/lib/supabaseClient";
 import { Loader2 as Spinner } from "lucide-react";
+import { ModeToggle } from "../components/mode-toggle";
 
 // Define a type for safety (optional but recommended)
 type SankeyData = {
@@ -65,6 +66,7 @@ export default function DashboardPage() {
             >
               Zanki
             </Link>
+            <ModeToggle />
           </div>
 
           <nav className="flex flex-1 flex-col gap-2 px-4 py-6">
