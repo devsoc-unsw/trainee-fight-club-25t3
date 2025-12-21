@@ -125,13 +125,6 @@ export default function HeroSection() {
                   width={2880}
                   height={2074}
                 />
-                <Image
-                  className="rounded-(--radius) hidden border shadow-xl dark:block"
-                  src="/dashboard_img.webp"
-                  alt="Dashboard Preview"
-                  width={2880}
-                  height={2074}
-                />
               </div>
             </div>
           </div>
